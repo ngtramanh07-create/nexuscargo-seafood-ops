@@ -1,0 +1,6 @@
+# Project-scoped Supabase CLI configuration. A links this to their remote project.
+project_id = "nexuscargo"
+
+[api]
+# The private schema holding the RLS helper is deliberately not exposed.
+schemas = ["public", "graphql_public"]
