@@ -42,6 +42,11 @@ async function requestData<T>(path: string, init: RequestInit = {}): Promise<T> 
     credentials: "same-origin",
   });
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+      // API helper runs outside React event handlers; a full navigation clears stale protected views.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.assign("/login");
+    }
     let message = `Không lấy được dữ liệu (HTTP ${response.status}).`;
     try {
       const body = (await response.json()) as ApiErrorResponse;

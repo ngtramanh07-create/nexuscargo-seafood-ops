@@ -1,10 +1,15 @@
 import { developmentOnly, error, ok } from "@/lib/api-fixture";
 import { assignees, recalculateShipment, saveFixture, shipments } from "@/lib/fixture-db";
 import { isFixtureMode } from "@/lib/data-source";
+import { dbUpdateTask } from "@/lib/db-write";
 import type { UpdateTaskRequest } from "@/types/contracts";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ taskId: string }> }): Promise<Response> {
-  if (!isFixtureMode()) return error("FORBIDDEN", "Chế độ Supabase chưa bật API ghi; hãy dùng bản demo cục bộ.", 501);
+  if (!isFixtureMode()) {
+    const { taskId } = await params;
+    try { return dbUpdateTask(taskId, await request.json() as UpdateTaskRequest); }
+    catch { return error("VALIDATION_ERROR", "Dữ liệu không hợp lệ.", 400); }
+  }
   const denied = developmentOnly(); if (denied) return denied;
   const { taskId } = await params;
   const shipment = shipments.find((row) => row.tasks.some((task) => task.id === taskId));

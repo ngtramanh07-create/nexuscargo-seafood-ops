@@ -17,6 +17,7 @@ type ShipmentRow = {
   status: ShipmentStatus; priority: ShipmentListItem["priority"]; risk_reasons: string[];
   assignee_name: string | null; container_count: number;
   required_set_point_celsius: number | null; seafood_profile: SeafoodProfile | null; updated_at: string;
+  si_seal_no: string | null;
 };
 type ContainerRow = {
   id: string; container_no: string | null; seal_no: string | null;
@@ -183,6 +184,7 @@ export async function dbShipmentDetail(shipmentId: string): Promise<Response> {
   const detail: ShipmentDetail = {
     ...listItem(row), requiredSetPointCelsius: row.required_set_point_celsius,
     seafoodProfile: row.seafood_profile,
+    siSealNo: row.si_seal_no,
     containers: ((containers.data ?? []) as ContainerRow[]).map(container),
     documents: ((documents.data ?? []) as DocumentRow[]).map(document),
     checks: ((checks.data ?? []) as CheckRow[]).map(check),

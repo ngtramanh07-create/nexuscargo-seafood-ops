@@ -1,10 +1,15 @@
 import { developmentOnly, error, ok } from "@/lib/api-fixture";
 import { recalculateShipment, saveFixture, shipments } from "@/lib/fixture-db";
 import { isFixtureMode } from "@/lib/data-source";
+import { dbReviewDocument } from "@/lib/db-write";
 import type { ReviewDecisionRequest } from "@/types/contracts";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ reviewId: string }> }): Promise<Response> {
-  if (!isFixtureMode()) return error("FORBIDDEN", "Chế độ Supabase chưa bật API ghi.", 501);
+  if (!isFixtureMode()) {
+    const { reviewId } = await params;
+    try { return dbReviewDocument(reviewId, await request.json() as ReviewDecisionRequest); }
+    catch { return error("VALIDATION_ERROR", "Dữ liệu không hợp lệ.", 400); }
+  }
   const denied = developmentOnly(); if (denied) return denied;
   const { reviewId } = await params;
   const shipment = shipments.find((row) => row.documents.some((doc) => `REV-${doc.id}` === reviewId));

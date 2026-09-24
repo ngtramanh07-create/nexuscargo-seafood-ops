@@ -1,9 +1,14 @@
 import { developmentOnly, error, ok } from "@/lib/api-fixture";
 import { recalculateShipment, saveFixture, shipments } from "@/lib/fixture-db";
 import { isFixtureMode } from "@/lib/data-source";
+import { dbUpdateSeal } from "@/lib/db-write";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ shipmentId: string }> }): Promise<Response> {
-  if (!isFixtureMode()) return error("FORBIDDEN", "Chế độ Supabase chưa bật API ghi.", 501);
+  if (!isFixtureMode()) {
+    const { shipmentId } = await params;
+    try { return dbUpdateSeal(shipmentId, String((await request.json()).sealNo ?? "").trim()); }
+    catch { return error("VALIDATION_ERROR", "Dữ liệu không hợp lệ.", 400); }
+  }
   const denied = developmentOnly(); if (denied) return denied;
   const { shipmentId } = await params;
   const shipment = shipments.find((row) => row.id === shipmentId);
