@@ -1,5 +1,7 @@
 # NexusCargo Seafood Ops — khung bàn giao A → B
 
+> **Triển khai hiện tại:** Nếu đã seed 500 lô lên Supabase, làm theo [hướng dẫn từng bước lên Vercel](docs/DEPLOY-VERCEL-TUNG-BUOC.md). Bản này có trang đăng nhập và API ghi công việc, duyệt chứng từ, sửa seal SI. Phần bàn giao A → B bên dưới ghi lại trạng thái thiết kế giai đoạn trước; tài liệu triển khai mới là hướng dẫn sử dụng hiện tại.
+
 > **Bản đã ghép giao diện B đợt 2:** xem [START-HERE.md](START-HERE.md) để chạy trên Windows và phân biệt dữ liệu giả lập với các thao tác đã lưu thật. Gói B đợt 2 đã gồm toàn bộ đợt 1.
 
 Khung Next.js + TypeScript dành cho hai người phát triển độc lập. **A** sở hữu Git, backend, database, logic, AI, tích hợp và Vercel. **B** sở hữu frontend và gửi code để A ghép. Dữ liệu trong gói **hoàn toàn giả lập**.
