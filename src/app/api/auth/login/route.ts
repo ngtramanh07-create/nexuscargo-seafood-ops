@@ -1,8 +1,9 @@
 import { error, ok } from "@/lib/api-fixture";
-import { hasSupabaseConfig } from "@/lib/data-source";
+import { hasSupabaseConfig, isPublicDemoMode } from "@/lib/data-source";
 import { createUserClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request): Promise<Response> {
+  if (isPublicDemoMode()) return error("FORBIDDEN", "Bản demo công khai không dùng đăng nhập.", 403);
   if (!hasSupabaseConfig()) return error("INTERNAL_ERROR", "Supabase chưa được cấu hình.", 503);
   let input: unknown;
   try { input = await request.json(); }

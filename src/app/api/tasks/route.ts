@@ -1,4 +1,4 @@
-import { developmentOnly, error, ok, pagination } from "@/lib/api-fixture";
+import { fixtureReadAllowed, error, ok, pagination } from "@/lib/api-fixture";
 import { getAllTasks, paginate, sortTasks } from "@/lib/fixture-db";
 import { isFixtureMode } from "@/lib/data-source";
 import { dbTasks } from "@/lib/db-read";
@@ -8,7 +8,7 @@ const statuses: TaskStatus[] = ["OPEN", "IN_PROGRESS", "DONE"];
 
 export async function GET(request: Request): Promise<Response> {
   if (!isFixtureMode()) return dbTasks(request);
-  const denied = developmentOnly();
+  const denied = fixtureReadAllowed();
   if (denied) return denied;
   const url = new URL(request.url);
   const params = pagination(url);

@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return process.env.NEXT_PUBLIC_NEXUSCARGO_PUBLIC_DEMO === "true"
+      ? [{ source: "/login", destination: "/", permanent: false }]
+      : [];
+  },
 };
 
 export default nextConfig;

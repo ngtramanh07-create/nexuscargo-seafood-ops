@@ -16,6 +16,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [signedIn, setSignedIn] = useState(false);
   useEffect(() => {
+    if (process.env.NEXT_PUBLIC_NEXUSCARGO_PUBLIC_DEMO === "true") return;
     fetch("/api/auth/me", { cache: "no-store" }).then((response) => setSignedIn(response.ok)).catch(() => {});
   }, []);
   async function logout() {

@@ -1,4 +1,4 @@
-import { developmentOnly, error, ok, pagination } from "@/lib/api-fixture";
+import { fixtureReadAllowed, error, ok, pagination } from "@/lib/api-fixture";
 import { paginate, shipments, sortShipments, toListItem } from "@/lib/fixture-db";
 import { isFixtureMode } from "@/lib/data-source";
 import { dbShipments } from "@/lib/db-read";
@@ -9,7 +9,7 @@ const statuses: ShipmentStatus[] = ["READY", "AT_RISK", "BLOCKED", "COMPLETED"];
 
 export async function GET(request: Request): Promise<Response> {
   if (!isFixtureMode()) return dbShipments(request);
-  const denied = developmentOnly();
+  const denied = fixtureReadAllowed();
   if (denied) return denied;
   const url = new URL(request.url);
   const params = pagination(url);

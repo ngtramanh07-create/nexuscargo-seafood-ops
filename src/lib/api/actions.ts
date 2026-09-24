@@ -5,8 +5,8 @@ import type {
   ShipmentStatus, Task, UpdateTaskRequest, UpdateTaskResult, UploadDocumentResult,
 } from "@/types/contracts";
 
-/** Server-backed demo writes survive refresh; production writes require a configured database. */
-export const isMockWriteMode = false;
+/** Public demo changes are browser previews; no database or fixture writes. */
+export const isMockWriteMode = process.env.NEXT_PUBLIC_NEXUSCARGO_PUBLIC_DEMO === "true";
 
 export async function performTaskUpdate(
   task: Task, payload: UpdateTaskRequest, assignees: AssigneeOption[], documents: DocumentRecord[], shipmentStatus: ShipmentStatus,

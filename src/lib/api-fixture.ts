@@ -1,13 +1,19 @@
 import type { ApiErrorCode, Page } from "@/types/contracts";
+import { isPublicDemoMode } from "@/lib/data-source";
 
 export function error(code: ApiErrorCode, message: string, status: number): Response {
   return Response.json({ error: { code, message } }, { status, headers: { "Cache-Control": "private, no-store" } });
 }
 
-/** Never expose the unauthenticated teaching fixture on Vercel/production. */
+/** Fixture writes stay limited to local development, even in public demo mode. */
 export function developmentOnly(): Response | null {
   if (process.env.NODE_ENV === "development" && process.env.DEMO_API_ENABLED !== "false") return null;
   return error("FORBIDDEN", "API dữ liệu mẫu chỉ dùng khi phát triển cục bộ.", 403);
+}
+
+/** Only synthetic fixture reads are available without login in the public demo. */
+export function fixtureReadAllowed(): Response | null {
+  return isPublicDemoMode() ? null : developmentOnly();
 }
 
 export function pagination(url: URL): { page: number; pageSize: number } | Response {

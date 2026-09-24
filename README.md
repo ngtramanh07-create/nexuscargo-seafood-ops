@@ -1,6 +1,6 @@
 # NexusCargo Seafood Ops — khung bàn giao A → B
 
-> **Triển khai hiện tại:** Nếu đã seed 500 lô lên Supabase, làm theo [hướng dẫn từng bước lên Vercel](docs/DEPLOY-VERCEL-TUNG-BUOC.md). Bản này có trang đăng nhập và API ghi công việc, duyệt chứng từ, sửa seal SI. Phần bàn giao A → B bên dưới ghi lại trạng thái thiết kế giai đoạn trước; tài liệu triển khai mới là hướng dẫn sử dụng hiện tại.
+> **Triển khai hiện tại:** Để mở demo cho mọi người xem mà không cần đăng nhập, xem [hướng dẫn demo công khai](docs/DEMO-KHONG-DANG-NHAP.md). Nếu dùng Supabase và đăng nhập để ghi dữ liệu, làm theo [hướng dẫn lên Vercel](docs/DEPLOY-VERCEL-TUNG-BUOC.md). Phần bàn giao A → B bên dưới ghi lại trạng thái thiết kế giai đoạn trước.
 
 > **Bản đã ghép giao diện B đợt 2:** xem [START-HERE.md](START-HERE.md) để chạy trên Windows và phân biệt dữ liệu giả lập với các thao tác đã lưu thật. Gói B đợt 2 đã gồm toàn bộ đợt 1.
 
@@ -15,7 +15,7 @@ npm ci
 npm run dev
 ```
 
-Mở `http://localhost:3000`. Không cần tạo `.env.local` để B chạy dữ liệu mẫu bằng `npm run dev`. Chế độ dữ liệu mẫu chỉ mở khi phát triển cục bộ; ở production, API chỉ dùng Supabase và yêu cầu đăng nhập. Nếu A chủ động tắt mock, đặt `DEMO_API_ENABLED=false`.
+Mở `http://localhost:3000`. Không cần tạo `.env.local` để B chạy dữ liệu mẫu bằng `npm run dev`. Ở production, dữ liệu mẫu chỉ mở công khai nếu bật `NEXT_PUBLIC_NEXUSCARGO_PUBLIC_DEMO=true`; khi đó Supabase không được dùng và các thao tác chỉ là bản xem trước trong trình duyệt. Nếu không bật, production tiếp tục dùng Supabase và yêu cầu đăng nhập. Nếu A chủ động tắt mock cục bộ, đặt `DEMO_API_ENABLED=false`.
 
 ```bash
 npm run typecheck
@@ -23,7 +23,7 @@ npm run lint
 npm run build
 ```
 
-`npm run seed:fixture` tái tạo `data/shipments.json` bằng script cố định, gồm **500 đơn và 550 container**. File JSON không phải database. Dữ liệu mới kết hợp 17 kịch bản gốc với các lỗi có thể đồng thời xuất hiện, bốn thị trường, quy cách tôm/cá tra, mã lô, kiểm nghiệm và bản ghi đầu dò hàng. A làm theo [docs/A-SUPABASE-SETUP.md](docs/A-SUPABASE-SETUP.md) để áp dụng **cả hai migration** trước `npm run seed:supabase`, đưa đúng 500 đơn này vào Supabase. A đặt `NEXUSCARGO_DATA_SOURCE=supabase` để dùng nhánh API đọc từ database ở máy A; production luôn dùng nhánh database. Xem [docs/SEAFOOD-RULES.md](docs/SEAFOOD-RULES.md) trước khi diễn giải số liệu trước BGK.
+`npm run seed:fixture` tái tạo `data/shipments.json` bằng script cố định, gồm **500 đơn và 550 container**. File JSON không phải database. Dữ liệu mới kết hợp 17 kịch bản gốc với các lỗi có thể đồng thời xuất hiện, bốn thị trường, quy cách tôm/cá tra, mã lô, kiểm nghiệm và bản ghi đầu dò hàng. A làm theo [docs/A-SUPABASE-SETUP.md](docs/A-SUPABASE-SETUP.md) để áp dụng **cả hai migration** trước `npm run seed:supabase`, đưa đúng 500 đơn này vào Supabase. A đặt `NEXUSCARGO_DATA_SOURCE=supabase` để dùng nhánh API đọc từ database ở máy A; production mặc định dùng nhánh database trừ khi bật demo công khai. Xem [docs/SEAFOOD-RULES.md](docs/SEAFOOD-RULES.md) trước khi diễn giải số liệu trước BGK.
 
 Trong bản mẫu, đầu mối xử lý là **bộ phận** theo loại lỗi: Chứng từ, Vận tải / Hiện trường hoặc Kiểm soát chất lượng. API vẫn giữ tên trường `assigneeId`/`assigneeName` để B không phải sửa các chỗ đã tích hợp, nhưng nhãn hiện trên giao diện là bộ phận. Trang Công việc có 275 việc chưa làm, 100 việc đang xử lý và 143 việc đã hoàn tất kèm bằng chứng SI đã xác nhận. Số lượng này là tiến độ **giả lập**, không phải nhật ký thực tế.
 

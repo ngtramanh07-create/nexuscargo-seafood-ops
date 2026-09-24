@@ -1,6 +1,10 @@
-/** Only development mode may serve the unauthenticated synthetic fixture. */
+/** Public demo uses the bundled synthetic fixture, never the protected database. */
+export function isPublicDemoMode(): boolean {
+  return process.env.NEXT_PUBLIC_NEXUSCARGO_PUBLIC_DEMO === "true";
+}
+
 export function isFixtureMode(): boolean {
-  return process.env.NODE_ENV === "development" && process.env.NEXUSCARGO_DATA_SOURCE !== "supabase";
+  return isPublicDemoMode() || process.env.NODE_ENV === "development" && process.env.NEXUSCARGO_DATA_SOURCE !== "supabase";
 }
 
 export function hasSupabaseConfig(): boolean {
